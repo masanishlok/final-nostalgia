@@ -1,0 +1,448 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0a0a23;
+    font-family: 'VT323', monospace;
+    color: #00ff00;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(0deg, rgba(0, 255, 0, 0.05), rgba(0, 255, 0, 0.05) 2px, transparent 2px, transparent 4px);
+    z-index: -1;
+}
+
+body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 10%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.control-panel-header {
+    background: #1a1a3d;
+    border-bottom: 4px solid #00ff00;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+.panel-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 2rem;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+    text-decoration: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.panel-title:hover {
+    text-shadow: 0 0 15px #00ff00, 0 0 25px #00cc00;
+}
+
+.power-btn {
+    background: #ff3333;
+    color: #fff;
+    border: 2px solid #00ff00;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.power-btn:hover {
+    background: #cc0000;
+    box-shadow: 0 0 15px #ff3333;
+}
+
+.console-container {
+    max-width: 100vw; /* Full viewport width */
+    margin: 0 auto;
+    padding: 20px 10px;
+    flex-grow: 1;
+    position: relative;
+}
+
+.crt-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(0deg, rgba(0, 255, 0, 0.08) 0px, rgba(0, 255, 0, 0.08) 2px, transparent 3px, transparent 6px);
+    animation: screenFlicker 1.2s infinite alternate;
+}
+
+@keyframes screenFlicker {
+    0% { opacity: 0.95; }
+    100% { opacity: 1; }
+}
+
+.console-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 2.5rem;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.console-subtitle {
+    font-size: 1.5rem;
+    color: #00cc00;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.dashboard-panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Ensures panels fill the available space */
+    gap: 20px;
+}
+
+.panel {
+    background: #1a1a3d;
+    border: 3px solid #00ff00;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.panel::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 255, 0, 0.1) 0%, transparent 70%);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.panel-label {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.3rem;
+    color: #00ff00;
+    text-shadow: 0 0 8px #00ff00;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.panel-content {
+    color: #00cc00;
+    font-size: 1.2rem;
+}
+
+.profile-panel p {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    background: rgba(0, 255, 0, 0.1);
+    border-radius: 5px;
+}
+
+.profile-panel p i {
+    margin-right: 10px;
+    color: #00ff00;
+}
+
+.time-dial-panel .panel-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.retro-select {
+    background: #0a0a23;
+    color: #00ff00;
+    border: 2px solid #00ff00;
+    border-radius: 5px;
+    padding: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    width: 100%;
+    max-width: 250px;
+    transition: all 0.3s ease;
+}
+
+.retro-select:focus {
+    box-shadow: 0 0 10px #00ff00;
+    outline: none;
+}
+
+.retro-btn {
+    background: #00ff00;
+    color: #0a0a23;
+    border: 2px solid #00cc00;
+    border-radius: 5px;
+    padding: 12px 25px;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 5px #00ff00;
+    animation: glowPulse 1.5s infinite alternate;
+}
+
+@keyframes glowPulse {
+    0% { box-shadow: 0 0 10px #00ff00; }
+    100% { box-shadow: 0 0 20px #00ff00, 0 0 40px #00cc00; }
+}
+
+.retro-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 0 5px #00cc00 inset;
+}
+
+.retro-btn:hover {
+    background: #00cc00;
+    box-shadow: 0 0 15px #00ff00;
+}
+
+.activate-btn {
+    background: #ffcc00;
+    border-color: #ff9900;
+}
+
+.activate-btn:hover {
+    background: #ff9900;
+    box-shadow: 0 0 15px #ffcc00;
+}
+
+.memory-list {
+    list-style: none;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.memory-item {
+    padding: 12px;
+    background: rgba(0, 255, 0, 0.1);
+    margin-bottom: 6px;
+    border-radius: 5px;
+    transition: background 0.2s ease;
+}
+
+.memory-item:hover {
+    background: rgba(0, 255, 0, 0.2);
+}
+
+.memory-item.text-muted {
+    font-style: italic;
+    color: #008800;
+}
+
+.time-window-panel {
+    grid-column: span 2;
+}
+
+#nostalgiaContent {
+    min-height: 300px;
+    position: relative;
+}
+
+.spinner-border {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-color: #00ff00;
+    border-right-color: transparent;
+}
+
+.data-section {
+    margin-bottom: 20px;
+}
+
+.data-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.2rem;
+    color: #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+    margin-bottom: 10px;
+}
+
+.data-list {
+    list-style: none;
+}
+
+.data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: rgba(0, 255, 0, 0.1);
+    margin-bottom: 6px;
+    border-radius: 5px;
+    transition: background 0.2s ease;
+}
+
+.data-item:hover {
+    background: rgba(0, 255, 0, 0.2);
+}
+
+.data-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: #00ff00;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+    color: #00cc00;
+    transform: scale(1.2);
+}
+
+.favorite-btn.favorited {
+    color: #ffcc00;
+}
+
+.data-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+    gap: 20px;
+}
+
+.archive-item {
+    background: rgba(0, 255, 0, 0.15);
+    border: 1px solid #00ff00;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.archive-item:hover {
+    background: rgba(0, 255, 0, 0.25);
+    box-shadow: 0 0 10px #00ff00;
+}
+
+.archive-item h6 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.2rem;
+    color: #00ff00;
+    margin-bottom: 10px;
+}
+
+.archive-item p {
+    font-size: 1rem;
+    color: #00cc00;
+    margin-bottom: 8px;
+}
+
+.archive-item .text-muted {
+    color: #008800;
+    font-style: italic;
+}
+
+.retro-link {
+    color: #00ff00;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.retro-link:hover {
+    color: #ffcc00;
+    text-shadow: 0 0 5px #ffcc00;
+}
+
+.error-message {
+    color: #ff3333;
+    font-size: 1.1rem;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.retry-btn {
+    background: #ff3333;
+    border-color: #cc0000;
+}
+
+.retry-btn:hover {
+    background: #cc0000;
+    box-shadow: 0 0 15px #ff3333;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #1a1a3d;
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    padding: 20px;
+    color: #00ff00;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+}
+
+.modal-content h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.modal-content p {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+.modal-content .close-btn {
+    background: #ff3333;
+    color: #fff;
+    border: 2px solid #00ff00;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-content .close-btn:hover {
+    background: #cc0000;
+    box-shadow: 0 0 15px #ff3333;
+}

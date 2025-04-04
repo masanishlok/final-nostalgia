@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Nostalgia Time Machine</title>
+
+    <!-- Google Fonts for Retro Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- CSS Styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a3d, #0a0a23);
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Back to Home Button */
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: #FFD700;
+            color: #0a0a23;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px #FFD700;
+            transition: background 0.3s, transform 0.1s, box-shadow 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #ffcc00;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #ffcc00;
+        }
+
+        /* Login Container */
+        .auth-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 30px;
+        }
+
+        .auth-container {
+            background: linear-gradient(90deg, #1a1a3d, #2a2a5d, #1a1a3d);
+            border: 3px solid #FFD700;
+            border-radius: 20px;
+            padding: 60px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        .auth-container h2 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2rem;
+            color: #FFD700;
+            text-shadow: 0 0 15px #FFD700, 0 0 30px #ffcc00;
+            margin-bottom: 30px;
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            padding: 15px;
+            border: 2px solid #FFD700;
+            border-radius: 8px;
+            background: #0a0a23;
+            color: #fff;
+            font-size: 1.2rem;
+            outline: none;
+        }
+
+        .btn.primary-btn {
+            background: #FFD700;
+            color: #0a0a23;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px #FFD700;
+            transition: background 0.3s, transform 0.1s, box-shadow 0.3s;
+        }
+
+        .btn.primary-btn:hover {
+            background: #ffcc00;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #ffcc00;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 40px;
+                max-width: 90%;
+            }
+            .auth-container h2 {
+                font-size: 1.5rem;
+            }
+            .back-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 30px;
+            }
+            .back-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+                top: 15px;
+                left: 15px;
+            }
+        }
+
+        /* Flash Message Styling */
+        .flash-messages {
+            margin-bottom: 15px;
+        }
+
+        .flash-danger {
+            color: #ff4d4d;
+            background: rgba(255, 77, 77, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .flash-success {
+            color: #4dff4d;
+            background: rgba(77, 255, 77, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Back to Home Button -->
+    <button class="back-btn" id="back-btn">← Back to Home</button>
+
+    <!-- Login Container -->
+    <div class="auth-wrapper">
+        <div class="auth-container">
+            <h2>Login to Continue</h2>
+
+            <!-- Display Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form id="login-form" method="POST" action="{{ url_for('login') }}">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+
+                <!-- Google reCAPTCHA Widget -->
+                <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+
+                <button type="submit" class="btn primary-btn">Login</button>
+            </form>
+
+            <p>Don't have an account? <a href="{{ url_for('register') }}">Sign up here</a></p>
+        </div>
+    </div>
+
+    <!-- Load Google reCAPTCHA API -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <script>
+        // Redirect to Home on Back Button Click
+        const homeUrl = "{{ url_for('home') }}";
+        document.getElementById('back-btn').addEventListener('click', function() {
+            window.location.href = homeUrl;
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Nostalgia Time Machine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background: #121212;
+            color: #fff;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            background: #1e1e1e;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            border-right: 2px solid #FFD700;
+        }
+
+        .sidebar h2 {
+            font-size: 1.3rem;
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 10px;
+            border-bottom: 1px solid #333;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            color: #FFD700;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 230px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        h2 {
+            color: #FFD700;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .admin-section {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #FFD700;
+        }
+
+        .admin-section h3 {
+            color: #FFD700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #222;
+            color: #fff;
+            border: 1px solid #FFD700;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #333;
+            text-align: left;
+        }
+
+        th {
+            background: #FFD700;
+            color: #121212;
+        }
+
+        tr:hover {
+            background: #333;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: #FFD700;
+            color: #121212;
+        }
+
+        .btn-danger {
+            background: red;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Input */
+        input[type="number"] {
+            padding: 8px;
+            border: 1px solid #FFD700;
+            border-radius: 5px;
+            background: #222;
+            color: #fff;
+            width: 100px;
+            margin-right: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background: #1e1e1e;
+            border-top: 2px solid #FFD700;
+            color: #ddd;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 2px solid #FFD700;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 10px;
+            }
+
+            .admin-section {
+                padding: 15px;
+            }
+
+            input[type="number"] {
+                width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="#">Users</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2>Welcome, Admin</h2>
+
+        <!-- User Management -->
+        <div class="admin-section">
+            <h3>Registered Users</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user._id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <button class="btn btn-danger" onclick="deleteUser('{{ user._id }}')">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Manage Years -->
+        <div class="admin-section">
+            <h3>Manage Available Years</h3>
+            <input type="number" id="yearInput" placeholder="Enter year">
+            <button class="btn btn-primary" onclick="addYear()">Add Year</button>
+            <ul>
+                {% for year in years %}
+                    <li>{{ year }} <button class="btn btn-danger" onclick="deleteYear('{{ year }}')">Remove</button></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 The Nostalgia Time Machine. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function deleteUser(userId) {
+            if (confirm("Are you sure?")) {
+                fetch(`/delete_user/${userId}`, { method: "DELETE" })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                })
+                .catch(error => console.error("Error:", error));
+            }
+        }
+
+        function addYear() {
+            const year = document.getElementById("yearInput").value;
+            if (year) {
+                fetch("/add_year", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ year })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                })
+                .catch(error => console.error("Error:", error));
+            }
+        }
+
+        function deleteYear(year) {
+            if (confirm("Are you sure?")) {
+                fetch(`/delete_year/${year}`, { method: "DELETE" })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                })
+                .catch(error => console.error("Error:", error));
+            }
+        }
+    </script>
+
+</body>
+</html>

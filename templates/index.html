@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Nostalgia Time Machine</title>
+    
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts for Retro Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="static/index.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header" role="banner">
+        <h1>The Nostalgia Time Machine</h1>
+        <nav aria-label="Main navigation">
+            <ul>
+                <li><a href="/" aria-current="page">Home</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            </ul>
+        </nav>
+        <button class="join-btn" onclick="redirectToLogin()" aria-label="Join Now to Start Exploring">Join Now</button>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero" role="banner">
+        <div class="content">
+            <h2>Rediscover Your Favorite Memories</h2>
+            <p>Step into the Nostalgia Time Machine and explore music, events, and cultural highlights from your chosen year. Relive the past today!</p>
+            <div class="buttons">
+                <button class="primary-btn" onclick="redirectToLogin()" aria-label="Join Now to Start Exploring">Join Now</button>
+            </div>
+        </div>
+        <div class="timeline-slider" role="region" aria-label="Time Travel Selection">
+            <h3 class="timeline-title">Travel Through Time</h3>
+            <div class="timeline-container">
+                <div class="timeline">
+                    <div class="timeline-markers">
+                        <button class="timeline-marker past" onclick="selectYear('1950s')" aria-label="Explore the 1950s">1950s</button>
+                        <button class="timeline-marker" onclick="selectYear('1970s')" aria-label="Explore the 1970s">1970s</button>
+                        <button class="timeline-marker" onclick="selectYear('1990s')" aria-label="Explore the 1990s">1990s</button>
+                        <button class="timeline-marker" onclick="selectYear('2010s')" aria-label="Explore the 2010s">2010s</button>
+                        <button class="timeline-marker future" onclick="selectYear('Future')" aria-label="Explore the Future">Future</button>
+                    </div>
+                    <input type="range" min="0" max="100" value="50" step="25" id="timeline-slider" oninput="updateTimeline(this.value)" aria-label="Select a time period">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Your Gateway to the Past -->
+    <section class="features" id="features" role="region" aria-label="Features">
+        <h2>Your Gateway to the Past</h2>
+        <p>The Nostalgia Time Machine lets you choose any year, offering a unique blend of music, events, and a peek into history you won’t forget.</p>
+        
+        <div class="feature-grid">
+            <article class="feature-box">
+                <span class="icon" aria-hidden="true">🚀</span>
+                <h3>Year Selection</h3>
+                <p>Easily select a year to unlock unforgettable memories from that time.</p>
+            </article>
+            <article class="feature-box">
+                <span class="icon" aria-hidden="true">💜</span>
+                <h3>Archived Websites</h3>
+                <p>Explore old versions of websites like Google, Facebook, and more.</p>
+            </article>
+            <article class="feature-box">
+                <span class="icon" aria-hidden="true">🌗</span>
+                <h3>Trending Media</h3>
+                <p>Watch classic videos and listen to iconic songs that defined your chosen year.</p>
+            </article>
+            <article class="feature-box">
+                <span class="icon" aria-hidden="true">🔒</span>
+                <h3>Historical News</h3>
+                <p>Stay updated with major news headlines and significant events from the time.</p>
+            </article>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonial-section" role="region" aria-label="User Testimonials">
+        <h2>What Our Users Say</h2>
+        <div class="testimonial-container">
+            <div class="testimonial-wrapper" tabindex="0">
+                <article class="testimonial-card" aria-hidden="false">
+                    <p>"The Nostalgia Time Machine offers an unparalleled journey through history. The archived websites and detailed historical news sections are invaluable for my research, providing authentic insights into past decades."</p>
+                    <h3>Dr. Margaret Ellis</h3>
+                    <span>Historian</span>
+                </article>
+                <article class="testimonial-card" aria-hidden="true">
+                    <p>"As an educator, I find this platform transformative for teaching history. The ability to explore trending media from any year engages my students and brings historical contexts to life in a way textbooks cannot."</p>
+                    <h3>James Patel</h3>
+                    <span>High School History Teacher</span>
+                </article>
+                <article class="testimonial-card" aria-hidden="true">
+                    <p>"The seamless year-selection interface and curated cultural highlights make revisiting the past a delight. As a developer, I appreciate the technical precision behind this nostalgic experience."</p>
+                    <h3>Sofia Alvarez</h3>
+                    <span>Software Engineer</span>
+                </article>
+            </div>
+        </div>
+
+        <!-- Navigation Dots -->
+        <div class="testimonial-dots" role="navigation" aria-label="Testimonial carousel controls">
+            <button class="testimonial-dot active" onclick="showTestimonial(0)" aria-label="Show testimonial 1" aria-current="true"></button>
+            <button class="testimonial-dot" onclick="showTestimonial(1)" aria-label="Show testimonial 2"></button>
+            <button class="testimonial-dot" onclick="showTestimonial(2)" aria-label="Show testimonial 3"></button>
+        </div>
+    </section>
+
+    <!-- Time Travel Section -->
+    <section class="time-travel-section" id="time-travel" role="region" aria-label="Time Travel Features">
+        <div class="time-travel-grid">
+            <article class="time-card text-card">
+                <h3>Explore Your Favorite Year with Us!</h3>
+                <p>Travel back in time to relive cherished memories and discover historical moments.</p>
+                <button class="primary-btn" onclick="redirectToLogin()" aria-label="Get Started Exploring">Get Started</button>
+            </article>
+            <div class="time-card image-card">
+                <img src="{{ url_for('static', filename='your-image-1.png') }}" alt="Vintage radio representing 1950s nostalgia" loading="lazy">
+            </div>
+            <div class="time-card image-card">
+                <img src="{{ url_for('static', filename='your-image-2.png') }}" alt="Retro TV displaying 1990s media" loading="lazy">
+            </div>
+            <article class="time-card text-card">
+                <h3>Time Travel Excursion</h3>
+                <ul>
+                    <li>✔️ Yearly Selections</li>
+                    <li>✔️ Cultural Highlights</li>
+                </ul>
+                <button class="primary-btn" onclick="redirectToLogin()" aria-label="Join Now for Time Travel">Join Now</button>
+            </article>
+            <article class="time-card text-card">
+                <h3>Nostalgic Exploration</h3>
+                <ul>
+                    <li>✔️ Digital Archives</li>
+                    <li>✔️ Significant Events</li>
+                </ul>
+                <button class="primary-btn" onclick="redirectToLogin()" aria-label="Dive Into Nostalgia">Dive In</button>
+            </article>
+            <div class="time-card image-card">
+                <img src="{{ url_for('static', filename='your-image-3.png') }}" alt="Futuristic interface for time travel" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>The Nostalgia Time Machine is your portal to the past, bringing memories, music, and history back to life.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    <li><a href="/privacy-policy">Privacy Policy</a></li>
+                    <li><a href="/terms-of-service">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <p>We’d love to hear from you! Reach out via email or follow us on social media.</p>
+                <p>Email: <a href="mailto:support@nostalgiatimemachine.com">support@nostalgiatimemachine.com</a></p>
+                <ul class="social-icons" aria-label="Social media links">
+                    <li><a href="#" aria-label="Follow us on Facebook"><i class="fab fa-facebook"></i></a></li>
+                    <li><a href="#" aria-label="Follow us on Twitter"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="#" aria-label="Follow us on Instagram"><i class="fab fa-instagram"></i></a></li>
+                    <li><a href="#" aria-label="Follow us on YouTube"><i class="fab fa-youtube"></i></a></li>
+                    <li><a href="#" aria-label="Follow us on LinkedIn"><i class="fab fa-linkedin"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 The Nostalgia Time Machine. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script>
+        // Redirect to login
+        function redirectToLogin() {
+            window.location.href = "{{ url_for('login') }}";
+        }
+
+        // Placeholder for year selection
+        function selectYear(year) {
+            console.log(`Selected year: ${year}`);
+            redirectToLogin();
+        }
+
+        // Testimonial sliding with auto-play
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentTestimonial = 0;
+            const testimonials = document.querySelectorAll('.testimonial-card');
+            const dots = document.querySelectorAll('.testimonial-dot');
+            const wrapper = document.querySelector('.testimonial-wrapper');
+            let autoPlayInterval;
+
+            // Debugging: Check if elements are found
+            if (!wrapper || !testimonials.length || !dots.length) {
+                console.error('Testimonial elements not found:', {
+                    wrapper,
+                    testimonials: testimonials.length,
+                    dots: dots.length
+                });
+                return;
+            }
+
+            function showTestimonial(index) {
+                currentTestimonial = index % testimonials.length; // Ensure index stays in bounds
+                wrapper.style.transform = `translateX(-${currentTestimonial * 100}%)`;
+                dots.forEach(dot => {
+                    dot.classList.remove('active');
+                    dot.removeAttribute('aria-current');
+                });
+                dots[currentTestimonial].classList.add('active');
+                dots[currentTestimonial].setAttribute('aria-current', 'true');
+                testimonials.forEach((card, i) => {
+                    card.setAttribute('aria-hidden', i === currentTestimonial ? 'false' : 'true');
+                });
+            }
+
+            function startAutoPlay() {
+                stopAutoPlay(); // Clear any existing interval
+                autoPlayInterval = setInterval(() => {
+                    currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+                    showTestimonial(currentTestimonial);
+                }, 5000); // Change every 5 seconds
+            }
+
+            function stopAutoPlay() {
+                if (autoPlayInterval) {
+                    clearInterval(autoPlayInterval);
+                }
+            }
+
+            // Initialize ARIA attributes
+            testimonials.forEach((card, i) => {
+                card.setAttribute('aria-hidden', i === 0 ? 'false' : 'true');
+            });
+
+            // Dot click events
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    stopAutoPlay();
+                    showTestimonial(index);
+                    startAutoPlay();
+                });
+            });
+
+            // Hover events for pause/resume
+            wrapper.addEventListener('mouseover', stopAutoPlay);
+            wrapper.addEventListener('mouseout', startAutoPlay);
+
+            // Keyboard navigation for accessibility
+            wrapper.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    stopAutoPlay();
+                    showTestimonial((currentTestimonial - 1 + testimonials.length) % testimonials.length);
+                    startAutoPlay();
+                } else if (e.key === 'ArrowRight') {
+                    stopAutoPlay();
+                    showTestimonial((currentTestimonial + 1) % testimonials.length);
+                    startAutoPlay();
+                }
+            });
+
+            // Start auto-play
+            startAutoPlay();
+        });
+
+        // Timeline slider
+        function updateTimeline(value) {
+            const markers = document.querySelectorAll('.timeline-marker');
+            markers.forEach(marker => marker.style.color = '#ddd');
+            const index = value / 25;
+            if (index >= 0 && index < markers.length) {
+                markers[index].style.color = '#FFD700';
+            }
+        }
+    </script>
+</body>
+</html>

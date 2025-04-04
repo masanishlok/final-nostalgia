@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Machine Dashboard | The Nostalgia Time Machine</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="control-panel-header">
+        <a class="panel-title" href="{{ home_url }}">The Nostalgia Time Machine</a>
+        <button class="power-btn" onclick="logout()">
+            <i class="fas fa-power-off"></i> Power Off
+        </button>
+    </header>
+
+    <!-- Main Dashboard -->
+    <div class="console-container">
+        <div class="crt-overlay"></div>
+        <h2 class="console-title">Temporal Control Unit <span id="username">{{ username }}</span></h2>
+        <p class="console-subtitle">Activate the time circuits and dial back the years!</p>
+
+        <div class="dashboard-panels">
+            <!-- Profile Panel -->
+            <div class="panel profile-panel">
+                <h5 class="panel-label">Pilot ID</h5>
+                <div class="panel-content">
+                    <p><i class="fas fa-user-astronaut"></i> <span id="profile-username">{{ username }}</span></p>
+                    <p><i class="fas fa-envelope"></i> <span id="profile-email">Loading...</span></p>
+                    <p><i class="fas fa-clock"></i> <span id="profile-joined">Loading...</span></p>
+                    <button class="retro-btn" onclick="openEditModal()">Adjust Settings</button>
+                </div>
+            </div>
+
+            <!-- Time Dial Panel -->
+            <div class="panel time-dial-panel">
+                <h5 class="panel-label">Time Dial</h5>
+                <div class="panel-content">
+                    <select id="yearSelect" class="retro-select">
+                        <option value="" selected disabled>Select Year</option>
+                    </select>
+                    <button class="retro-btn activate-btn" onclick="loadContent()">
+                        <i class="fas fa-bolt"></i> Engage
+                    </button>
+                </div>
+            </div>
+
+            <!-- Memory Bank Panel -->
+            <div class="panel memory-bank-panel">
+                <h5 class="panel-label">Memory Bank</h5>
+                <div class="panel-content">
+                    <ul id="favoritesList" class="memory-list">
+                        <li class="memory-item text-muted">No data stored</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Time Window Panel -->
+            <div class="panel time-window-panel">
+                <h5 class="panel-label">Time Window</h5>
+                <div class="panel-content" id="nostalgiaContent">
+                    <p class="text-muted">Set year to activate time window</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <h5 class="modal-title">Pilot Configuration</h5>
+            <input type="text" id="editUsername" placeholder="Pilot Name" value="{{ username }}">
+            <input type="email" id="editEmail" placeholder="Comm Address">
+            <div class="modal-buttons">
+                <button class="retro-btn" onclick="saveProfile()">Store</button>
+                <button class="retro-btn" onclick="closeEditModal()">Abort</button>
+            </div>
+        </div>
+    </div>
+  
+
+    <footer class="console-footer">
+        <p>© 2025 Nostagia Time Machine </p>
+    </footer>
+
+    <script>
+        // Populate year dropdown (1980 to current year)
+        const yearSelect = document.getElementById('yearSelect');
+        const currentYear = new Date().getFullYear();
+        for (let year = 1980; year <= currentYear; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        }
+
+        let favorites = [];
+        fetch('/get_user_data')
+            .then(response => {
+                if (!response.ok) throw new Error('Not logged in');
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('username').textContent = data.username;
+                document.getElementById('profile-username').textContent = data.username;
+                document.getElementById('profile-email').textContent = data.email;
+                document.getElementById('profile-joined').textContent = data.joined;
+                document.getElementById('editUsername').value = data.username;
+                document.getElementById('editEmail').value = data.email; 
+                return fetch('/get_favorites');
+            })
+            .then(response => response.json())
+            .then(data => {
+                favorites = data.favorites || [];
+                updateFavoritesList();
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+                window.location.href = "{{ login_url }}";
+            });
+
+        // Load nostalgia content for selected year
+        function loadContent() {
+            const year = yearSelect.value;
+            if (!year) {
+                alert('Set time coordinates first!');
+                return;
+            }
+
+            const nostalgiaContent = document.getElementById('nostalgiaContent');
+            nostalgiaContent.innerHTML = '<div class="spinner-border text-warning" role="status"><span class="visually-hidden">Loading...</span></div>';
+
+            fetch(`/get_nostalgia_data?year=${year}`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    return response.json();
+                })
+                .then(data => {
+                    nostalgiaContent.innerHTML = '';
+
+                    // Music
+                    const musicSection = document.createElement('div');
+                    musicSection.className = 'data-section';
+                    musicSection.innerHTML = '<h6 class="data-title">Audio Logs 🎶</h6>';
+                    const musicList = document.createElement('ul');
+                    musicList.className = 'data-list';
+                    data.music.forEach((song) => {
+                        const isFavorited = favorites.some(f => f.type === 'music' && f.item === song);
+                        const li = document.createElement('li');
+                        li.className = 'data-item';
+                        li.innerHTML = `
+                            ${song}
+                            <div class="data-controls">
+                                <button class="control-btn" onclick="shareMemory('music', '${song}')"><i class="fas fa-share-alt"></i></button>
+                                <i class="fas fa-star control-btn favorite-btn ${isFavorited ? 'favorited' : ''}" data-type="music" data-item="${song}"></i>
+                            </div>
+                        `;
+                        musicList.appendChild(li);
+                    });
+                    musicSection.appendChild(musicList);
+                    nostalgiaContent.appendChild(musicSection);
+
+                    // Events
+                    const eventsSection = document.createElement('div');
+                    eventsSection.className = 'data-section';
+                    eventsSection.innerHTML = '<h6 class="data-title">Historical Records 📰</h6>';
+                    const eventsList = document.createElement('ul');
+                    eventsList.className = 'data-list';
+                    data.events.forEach((event) => {
+                        const isFavorited = favorites.some(f => f.type === 'event' && f.item === event);
+                        const li = document.createElement('li');
+                        li.className = 'data-item';
+                        li.innerHTML = `
+                            ${event}
+                            <div class="data-controls">
+                                <button class="control-btn" onclick="shareMemory('event', '${event}')"><i class="fas fa-share-alt"></i></button>
+                                <i class="fas fa-star control-btn favorite-btn ${isFavorited ? 'favorited' : ''}" data-type="event" data-item="${event}"></i>
+                            </div>
+                        `;
+                        eventsList.appendChild(li);
+                    });
+                    eventsSection.appendChild(eventsList);
+                    nostalgiaContent.appendChild(eventsSection);
+
+                    // Websites
+                    const websitesSection = document.createElement('div');
+                    websitesSection.className = 'data-section';
+                    websitesSection.innerHTML = '<h6 class="data-title">Digital Archives 🌐</h6>';
+                    const websitesGrid = document.createElement('div');
+                    websitesGrid.className = 'data-grid';
+                    data.websites.forEach(site => {
+                        const div = document.createElement('div');
+                        div.className = 'archive-item';
+                        if (site.error || !site.url) {
+                            div.innerHTML = `
+                                <h6>${site.name}</h6>
+                                <p class="text-muted">${site.error || 'Archive offline'}</p>
+                            `;
+                        } else {
+                            const date = `${site.timestamp.slice(0, 4)}-${site.timestamp.slice(4, 6)}-${site.timestamp.slice(6, 8)}`;
+                            div.innerHTML = `
+                                <h6>${site.name}</h6>
+                                <p>${date}</p>
+                                <a href="${site.url}" target="_blank" class="retro-link"><i class="fas fa-link"></i> Access</a>
+                            `;
+                        }
+                        websitesGrid.appendChild(div);
+                    });
+                    websitesSection.appendChild(websitesGrid);
+                    nostalgiaContent.appendChild(websitesSection);
+
+                    // Add favorite button listeners
+                    document.querySelectorAll('.favorite-btn').forEach(btn => {
+                        btn.addEventListener('click', toggleFavorite);
+                    });
+
+                    // Display errors if any
+                    if (data.errors) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'error-message';
+                        errorDiv.innerHTML = 'System Alert: ' + Object.values(data.errors).join(', ') + 
+                            ' <button class="retro-btn retry-btn" onclick="retryContent()">Reboot</button>';
+                        nostalgiaContent.appendChild(errorDiv);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching nostalgia data:', error);
+                    nostalgiaContent.innerHTML = '<p class="error-message">Temporal flux detected. <button class="retro-btn retry-btn" onclick="retryContent()">Reboot</button></p>';
+                });
+        }
+
+        // Retry nostalgia content
+        function retryContent() {
+            const year = yearSelect.value;
+            if (!year) {
+                alert('Set time coordinates first!');
+                return;
+            }
+
+            const nostalgiaContent = document.getElementById('nostalgiaContent');
+            nostalgiaContent.innerHTML = '<div class="spinner-border text-warning" role="status"><span class="visually-hidden">Loading...</span></div>';
+
+            fetch('/retry_nostalgia_data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ year: parseInt(year) })
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Retry failed');
+                    return response.json();
+                })
+                .then(data => loadContent())
+                .catch(error => {
+                    console.error('Error retrying nostalgia data:', error);
+                    nostalgiaContent.innerHTML = '<p class="error-message">Rebooting failed. Please try again.</p>';
+                });
+        }
+
+        // Share memory
+        function shareMemory(type, item) {
+            const memory = { type, item };
+            fetch('/share_memory', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(memory)
+            });
+        }
+
+        // Toggle favorite status
+        function toggleFavorite(e) {
+            const btn = e.target;
+            const type = btn.getAttribute('data-type');
+            const item = btn.getAttribute('data-item');
+            const favorited = btn.classList.toggle('favorited');
+
+            // Update favorite status on backend
+            fetch('/toggle_favorite', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type, item, favorited })
+            });
+
+            // Update the local favorites list
+            if (favorited) {
+                favorites.push({ type, item });
+            } else {
+                favorites = favorites.filter(f => f.type !== type || f.item !== item);
+            }
+            updateFavoritesList();
+        }
+
+        // Update favorites list
+        function updateFavoritesList() {
+            const favoritesList = document.getElementById('favoritesList');
+            favoritesList.innerHTML = '';
+            if (favorites.length === 0) {
+                favoritesList.innerHTML = '<li class="memory-item text-muted">No favorites stored</li>';
+            } else {
+                favorites.forEach(favorite => {
+                    const li = document.createElement('li');
+                    li.className = 'memory-item';
+                    li.textContent = `${favorite.type.charAt(0).toUpperCase() + favorite.type.slice(1)}: ${favorite.item}`;
+                    favoritesList.appendChild(li);
+                });
+            }
+        }
+
+        // Edit profile modal functions
+        function openEditModal() {
+            document.getElementById('editProfileModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        function saveProfile() {
+            const username = document.getElementById('editUsername').value;
+            const email = document.getElementById('editEmail').value;
+            fetch('/update_profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Profile updated successfully!');
+                        closeEditModal();
+                    } else {
+                        alert('Failed to update profile');
+                    }
+                })
+                .catch(error => alert('Error updating profile: ' + error));
+        }
+
+        // Log out function
+        function logout() {
+            fetch('/logout', { method: 'POST' }).then(() => window.location.href = "{{ login_url }}");
+        }
+    </script>
+</body>
+</html>

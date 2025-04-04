@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Nostalgia Time Machine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a3d, #0a0a23);
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="10" cy="10" r="1" fill="white" opacity="0.8"/><circle cx="90" cy="20" r="2" fill="white" opacity="0.6"/><circle cx="50" cy="80" r="1" fill="white" opacity="0.7"/><circle cx="30" cy="50" r="1.5" fill="white" opacity="0.5"/></svg>') repeat;
+            opacity: 0.3;
+            z-index: 0;
+            animation: starrySky 50s linear infinite;
+        }
+
+        @keyframes starrySky {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 1000px 1000px;
+            }
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: #FFD700;
+            color: #0a0a23;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer; /* Changed to cursor: pointer for button */
+            box-shadow: 0 0 15px #FFD700;
+            transition: background 0.3s, transform 0.1s, box-shadow 0.3s;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .back-btn:hover {
+            background: #ffcc00;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #ffcc00;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 15px #FFD700;
+            }
+            50% {
+                box-shadow: 0 0 25px #FFD700, 0 0 40px #ffcc00;
+            }
+            100% {
+                box-shadow: 0 0 15px #FFD700;
+            }
+        }
+
+        .auth-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 30px;
+            z-index: 1;
+        }
+
+        .auth-container {
+            background: linear-gradient(90deg, #1a1a3d, #2a2a5d, #1a1a3d);
+            background-size: 200% 100%;
+            border: 3px solid #FFD700;
+            border-radius: 20px;
+            padding: 60px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            animation: gradientShift 10s ease infinite;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-container h2 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2rem;
+            color: #FFD700;
+            text-shadow: 0 0 15px #FFD700, 0 0 30px #ffcc00;
+            margin-bottom: 30px;
+        }
+
+        .flash-danger, .flash-success, .flash-warning, .flash-info {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .flash-danger {
+            color: red;
+            background-color: #fdd;
+        }
+        .flash-success {
+            color: green;
+            background-color: #dfd;
+        }
+        .flash-warning {
+            color: orange;
+            background-color: #ffd;
+        }
+        .flash-info {
+            color: blue;
+            background-color: #ddf;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            padding: 15px;
+            border: 2px solid #FFD700;
+            border-radius: 8px;
+            background: #0a0a23;
+            color: #fff;
+            font-size: 1.2rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #ffcc00;
+            box-shadow: 0 0 10px #ffcc00;
+        }
+
+        input[type="text"]::placeholder,
+        input[type="email"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #bbb;
+            font-size: 1.2rem;
+        }
+
+        .btn.primary-btn {
+            background: #FFD700;
+            color: #0a0a23;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px #FFD700;
+            transition: background 0.3s, transform 0.1s, box-shadow 0.3s;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .btn.primary-btn:hover {
+            background: #ffcc00;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #ffcc00;
+        }
+
+        p {
+            margin-top: 30px;
+            color: #ddd;
+            font-size: 1.1rem;
+        }
+
+        p a {
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: bold;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        p a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: #FFD700;
+            bottom: -2px;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+
+        p a:hover::after {
+            width: 100%;
+        }
+
+        p a:hover {
+            color: #ffcc00;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 40px;
+                max-width: 90%;
+            }
+
+            .auth-container h2 {
+                font-size: 1.5rem;
+            }
+
+            .back-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+
+            .btn.primary-btn {
+                padding: 15px 30px;
+                font-size: 1rem;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="password"] {
+                padding: 12px;
+                font-size: 1rem;
+            }
+
+            input[type="text"]::placeholder,
+            input[type="email"]::placeholder,
+            input[type="password"]::placeholder {
+                font-size: 1rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 30px;
+            }
+
+            .auth-container h2 {
+                font-size: 1.2rem;
+            }
+
+            .back-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+                top: 15px;
+                left: 15px;
+            }
+
+            .btn.primary-btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Back to Home Button
+    <button class="back-btn" id="back-btn">← Back to Home</button> -->
+
+    <div class="auth-wrapper">
+        <div class="auth-container" id="register-container">
+            <h2>Create an Account</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form id="register-form" method="POST" action="{{ url_for('register') }}">
+                <input type="text" name="name" placeholder="Full Name" required aria-required="true">
+                <input type="email" name="email" placeholder="Email" required aria-required="true">
+                <input type="password" name="password" placeholder="Password" required aria-required="true">
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required aria-required="true">
+                <button type="submit" class="btn primary-btn">Sign Up</button>
+            </form>
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+        </div>
+    </div>
+
+    <!-- <script>
+        // Fix: Correctly get home URL using Flask
+        const homeUrl = "{{ url_for('home') }}";
+
+        // Add event listener to Back to Home button
+        document.getElementById('back-btn').addEventListener('click', function() {
+            console.log("Back to Home button clicked, redirecting to:", homeUrl);
+            
+            if (homeUrl) {
+                window.location.href = homeUrl;
+            } else {
+                console.error("Error: homeUrl is not defined correctly.");
+            }
+        });
+    </script> -->
+
+</body>
+</html>
+
+
